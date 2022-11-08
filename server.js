@@ -14,17 +14,28 @@ initializeApp({
 
 const db = getFirestore();
 
+app.get("/Places", async (req, res) => {
+  const placesCollection = db.collection('Places');
+  const places = await placesCollection.get();
+  console.log(places)
+  places.forEach(doc => {
+    console.log(doc.id, '=>', doc.data());
+  })
+  res.json(places);
+})
+
 app.get("/", (req, res) => {
   res.send("Wooho")
 })
-
 
 app.post("/NewPlace", (req, res) => {
   console.log(req.body);
   console.log(req.body.name)
   const docRef = db.collection('Places').add({
-      name:req.body.name
-    })
+    name: req.body.name
+  })
+
+
 
   docRef.set({
     first: 'Ada',
