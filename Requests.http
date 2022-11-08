@@ -1,0 +1,10 @@
+POST http://localhost:8080/New HTTP/1.1
+content-type: application/json
+
+{
+    "name": "sample",
+    "time": "Wed, 21 Oct 2015 18:27:50 GMT"
+}
+
+###
+Invoke-WebRequest -Uri http://127.0.0.1:8080/New -Method Post -Body (@{name='pawel'; description='dest'; num_of_servings=0} |ConvertTo-Json) -ContentType application/json
