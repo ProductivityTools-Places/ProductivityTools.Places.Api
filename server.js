@@ -18,10 +18,12 @@ app.get("/Places", async (req, res) => {
   const placesCollection = db.collection('Places');
   const places = await placesCollection.get();
   console.log(places)
+  var dict=new Object();
   places.forEach(doc => {
     console.log(doc.id, '=>', doc.data());
+    dict[doc.id]=doc.data();
   })
-  res.json(places);
+  res.json(dict);
 })
 
 app.get("/", (req, res) => {
