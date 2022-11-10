@@ -21,16 +21,18 @@ app.get("/Date", (req, res) => {
   res.send(new Date().toString());
 })
 
-app.get("/Places", async (req, res) => {
+app.get("/PlaceList", async (req, res) => {
   const placesCollection = db.collection('Places');
   const places = await placesCollection.get();
   console.log(places)
-  var dict = new Object();
+  var result = [];
   places.forEach(doc => {
-    console.log(doc.id, '=>', doc.data());
-    dict[doc.id] = doc.data();
+    var element = { id: doc.id }
+    console.log(doc.id, '=>', doc.data())
+    element = { ...element, ...doc.data() }
+    result.push(element);
   })
-  res.json(dict);
+  res.json(result);
 })
 
 app.get("/", (req, res) => {
