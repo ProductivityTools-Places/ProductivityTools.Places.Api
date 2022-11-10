@@ -1,7 +1,9 @@
 const { application } = require('express')
 const express = require('express')
+var cors = require('cors')
 const app = express()
 app.use(express.json())
+app.use(cors())
 
 const { initializeApp, applicationDefault, cert } = require('firebase-admin/app');
 const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
@@ -14,14 +16,19 @@ initializeApp({
 
 const db = getFirestore();
 
+app.get("/Date", (req, res) => {
+  console.log("request date")
+  res.send(new Date().toString());
+})
+
 app.get("/Places", async (req, res) => {
   const placesCollection = db.collection('Places');
   const places = await placesCollection.get();
   console.log(places)
-  var dict=new Object();
+  var dict = new Object();
   places.forEach(doc => {
     console.log(doc.id, '=>', doc.data());
-    dict[doc.id]=doc.data();
+    dict[doc.id] = doc.data();
   })
   res.json(dict);
 })

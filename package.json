@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/pwujczyk/ProductivityTools.Places#readme",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.18.2",
     "firebase-admin": "^11.2.0"
   }
