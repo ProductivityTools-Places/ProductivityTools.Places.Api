@@ -9,6 +9,7 @@ const { initializeApp, applicationDefault, cert } = require('firebase-admin/app'
 const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
 
 const serviceAccount = require("d:/Bitbucket/all.configuration/ptplacesprod-serviceaccount.json");
+// const { AppStore } = require('firebase-admin/lib/app/lifecycle')
 
 initializeApp({
   credential: cert(serviceAccount)
@@ -35,6 +36,18 @@ app.get("/PlaceList", async (req, res) => {
   res.json(result);
 })
 
+app.get("/Place", async (req, res) => {
+  let id = req.query.id;
+  console.log(req.query);
+  console.log(id);
+  const placeRef = db.collection('Places').doc(id);
+  const doc = await placeRef.get();
+  console.log(doc);
+  var element = { id: doc.id }
+  element = { ...element, ...doc.data() }
+  res.json(element);
+})
+
 app.get("/", (req, res) => {
   res.send("Wooho")
 })
@@ -46,13 +59,6 @@ app.post("/NewPlace", (req, res) => {
     name: req.body.name
   })
 
-
-
-  docRef.set({
-    first: 'Ada',
-    last: 'Lovelace',
-    born: 1815
-  });
   res.send(`Hello1 `);
 })
 
