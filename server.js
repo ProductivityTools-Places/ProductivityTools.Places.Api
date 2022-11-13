@@ -1,6 +1,10 @@
 const { application } = require('express')
 const express = require('express')
 var cors = require('cors')
+const bodyParser = require('body-parser')
+const multer = require('multer')
+const uploadImage = require('./helpers.js')
+
 const app = express()
 app.use(express.json())
 app.use(cors())
@@ -10,6 +14,44 @@ const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestor
 
 const serviceAccount = require("d:/Bitbucket/all.configuration/ptplacesprod-serviceaccount.json");
 // const { AppStore } = require('firebase-admin/lib/app/lifecycle')
+
+const multerMid = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024,
+  },
+})
+
+app.disable('x-powered-by')
+app.use(multerMid.single('file'))
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({extended: false}))
+
+app.post('/uploads', async (req, res, next) => {
+  try {
+    console.log("uploads starts")
+    console.log(req.file);
+    const myFile = req.file
+    const imageUrl = await uploadImage(myFile)
+    console.log(imageUrl)
+    res.status(200)
+      .json({
+        message: "Upload was successful",
+        data: imageUrl
+      })
+  } catch (error) {
+    next(error)
+  }
+})
+
+app.use((err, req, res, next) => {
+  res.status(500).json({
+    error: err,
+    message: 'Internal server error!',
+  })
+  next()
+})
+
 
 initializeApp({
   credential: cert(serviceAccount)

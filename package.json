@@ -19,8 +19,11 @@
   },
   "homepage": "https://github.com/pwujczyk/ProductivityTools.Places#readme",
   "dependencies": {
+    "@google-cloud/storage": "^6.7.0",
+    "body-parser": "^1.20.1",
     "cors": "^2.8.5",
     "express": "^4.18.2",
-    "firebase-admin": "^11.2.0"
+    "firebase-admin": "^11.2.0",
+    "multer": "^1.4.5-lts.1"
   }
 }
