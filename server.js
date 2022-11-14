@@ -13,6 +13,7 @@ const { initializeApp, applicationDefault, cert } = require('firebase-admin/app'
 const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
 
 const serviceAccount = require("d:/Bitbucket/all.configuration/ptplacesprod-serviceaccount.json");
+const { AppStore } = require('firebase-admin/lib/app/lifecycle.js')
 // const { AppStore } = require('firebase-admin/lib/app/lifecycle')
 
 const multerMid = multer({
@@ -102,6 +103,11 @@ app.post("/NewPlace", (req, res) => {
   })
 
   res.send(`Hello1 `);
+})
+
+
+app.post("/Visit", (req,res)=>{
+  console.log(req.body.comment);
 })
 
 const PORT = process.env.PORT || 8080;
