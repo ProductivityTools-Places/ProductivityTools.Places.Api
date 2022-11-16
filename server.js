@@ -1,13 +1,13 @@
 // const { application } = require('express')
 const express = require('express')
-// var cors = require('cors')
+var cors = require('cors')
 // const bodyParser = require('body-parser')
 // const multer = require('multer')
-// const uploadImage = require('./helpers.js')
+const uploadImage = require('./helpers.js')
 
 const app = express()
 // app.use(express.json())
-// app.use(cors())
+app.use(cors())
 
 const { initializeApp, applicationDefault, cert } = require('firebase-admin/app');
 const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
@@ -28,22 +28,22 @@ const serviceAccount = require("d:/Bitbucket/all.configuration/ptplacesprod-serv
 // app.use(bodyParser.json())
 // app.use(bodyParser.urlencoded({extended: false}))
 
-// app.post('/uploads', async (req, res, next) => {
-//   try {
-//     console.log("uploads starts")
-//     console.log(req.file);
-//     const myFile = req.file
-//     const imageUrl = await uploadImage(myFile)
-//     console.log(imageUrl)
-//     res.status(200)
-//       .json({
-//         message: "Upload was successful",
-//         data: imageUrl
-//       })
-//   } catch (error) {
-//     next(error)
-//   }
-// })
+app.post('/uploads', async (req, res, next) => {
+  try {
+    console.log("uploads starts")
+    console.log(req.file);
+    const myFile = req.file
+    const imageUrl = await uploadImage(myFile)
+    console.log(imageUrl)
+    res.status(200)
+      .json({
+        message: "Upload was successful",
+        data: imageUrl
+      })
+  } catch (error) {
+    next(error)
+  }
+})
 
 // app.use((err, req, res, next) => {
 //   res.status(500).json({
