@@ -1,8 +1,8 @@
 // const { application } = require('express')
 const express = require('express')
 var cors = require('cors')
-// const bodyParser = require('body-parser')
-// const multer = require('multer')
+const bodyParser = require('body-parser')
+const multer = require('multer')
 const uploadImage = require('./helpers.js')
 
 const app = express()
@@ -16,21 +16,22 @@ const serviceAccount = require("d:/Bitbucket/all.configuration/ptplacesprod-serv
 // const { AppStore } = require('firebase-admin/lib/app/lifecycle.js')
 // const { AppStore } = require('firebase-admin/lib/app/lifecycle')
 
-// const multerMid = multer({
-//   storage: multer.memoryStorage(),
-//   limits: {
-//     fileSize: 5 * 1024 * 1024,
-//   },
-// })
+const multerMid = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024,
+  },
+})
 
-// app.disable('x-powered-by')
-// app.use(multerMid.single('file'))
-// app.use(bodyParser.json())
-// app.use(bodyParser.urlencoded({extended: false}))
+app.disable('x-powered-by')
+app.use(multerMid.single('file'))
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({extended: false}))
 
 app.post('/uploads', async (req, res, next) => {
   try {
     console.log("uploads starts")
+    console.log(req)
     console.log(req.file);
     const myFile = req.file
     const imageUrl = await uploadImage(myFile)
