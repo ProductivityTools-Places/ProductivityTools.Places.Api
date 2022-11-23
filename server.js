@@ -109,9 +109,7 @@ app.post("/NewPlace", (req, res) => {
 app.post("/UpdatePlace", (req, res) => {
   console.log(req.body);
   console.log(req.body.name)
-  const docRef = db.collection('Places').doc(req.body.id).set({
-    name:req.body.name
-  })
+  const docRef = db.collection('Places').doc(req.body.id).set(req.body)
   res.send(`Updated`);
 })
 
