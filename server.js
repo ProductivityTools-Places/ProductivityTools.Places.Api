@@ -106,6 +106,15 @@ app.post("/NewPlace", (req, res) => {
   res.send(`Hello1 `);
 })
 
+app.post("/UpdatePlace", (req, res) => {
+  console.log(req.body);
+  console.log(req.body.name)
+  const docRef = db.collection('Places').doc(req.body.id).set({
+    name:req.body.name
+  })
+  res.send(`Updated`);
+})
+
 
 app.post("/Visit", (req,res)=>{
   console.log(req.body.comment);
