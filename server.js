@@ -62,7 +62,8 @@ initializeApp({
 const db = getFirestore();
 
 app.get("/Date", (req, res) => {
-  console.log("request date")
+  console.log("request date");
+  console.log(process.env.NODE_ENV)
   res.send(new Date().toString());
 })
 
@@ -93,7 +94,7 @@ app.get("/Place", async (req, res) => {
 })
 
 app.get("/", (req, res) => {
-  res.send("Wooho")
+  res.send("Wooho1")
 })
 
 app.post("/NewPlace", (req, res) => {
