@@ -55,9 +55,7 @@ app.post('/uploads', async (req, res, next) => {
 // })
 
 
-initializeApp({
-  credential: cert(serviceAccount)
-});
+initializeApp();
 
 const db = getFirestore();
 
