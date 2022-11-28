@@ -1,9 +1,9 @@
 //// const { application } = require('express')
 const express = require('express')
 var cors = require('cors')
-const bodyParser = require('body-parser')
-const multer = require('multer')
-const uploadImage = require('./helpers.js')
+//const bodyParser = require('body-parser')
+//const multer = require('multer')
+//const uploadImage = require('./helpers.js')
 
 const app = express()
 //// app.use(express.json())
