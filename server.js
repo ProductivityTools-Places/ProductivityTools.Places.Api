@@ -51,7 +51,7 @@ app.use(cors())
 //   credential: cert(serviceAccount)
 // });
 
-// const db = getFirestore();
+const db = getFirestore();
 
 app.get("/Date", (req, res) => {
   console.log("request date");
@@ -59,19 +59,19 @@ app.get("/Date", (req, res) => {
   res.send(new Date().toString());
 })
 
-// app.get("/PlaceList", async (req, res) => {
-//   const placesCollection = db.collection('Places');
-//   const places = await placesCollection.get();
-//   console.log(places)
-//   var result = [];
-//   places.forEach(doc => {
-//     var element = { id: doc.id }
-//     console.log(doc.id, '=>', doc.data())
-//     element = { ...element, ...doc.data() }
-//     result.push(element);
-//   })
-//   res.json(result);
-// })
+app.get("/PlaceList", async (req, res) => {
+  const placesCollection = db.collection('Places');
+  const places = await placesCollection.get();
+  console.log(places)
+  var result = [];
+  places.forEach(doc => {
+    var element = { id: doc.id }
+    console.log(doc.id, '=>', doc.data())
+    element = { ...element, ...doc.data() }
+    result.push(element);
+  })
+  res.json(result);
+})
 
 // app.get("/Place", async (req, res) => {
 //   let id = req.query.id;
