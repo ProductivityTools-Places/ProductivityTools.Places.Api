@@ -53,11 +53,11 @@ app.use(cors())
 
 // const db = getFirestore();
 
-// app.get("/Date", (req, res) => {
-//   console.log("request date");
-//   console.log(process.env.NODE_ENV)
-//   res.send(new Date().toString());
-// })
+app.get("/Date", (req, res) => {
+  console.log("request date");
+  console.log(process.env.NODE_ENV)
+  res.send(new Date().toString());
+})
 
 // app.get("/PlaceList", async (req, res) => {
 //   const placesCollection = db.collection('Places');
