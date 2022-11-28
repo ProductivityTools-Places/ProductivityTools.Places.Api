@@ -9,8 +9,9 @@ const app = express()
 //// app.use(express.json())
 app.use(cors())
 
-//const { initializeApp, applicationDefault, cert } = require('firebase-admin/app');
-//const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
+const { initializeApp, applicationDefault, cert } = require('firebase-admin/app');
+const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
+const { application } = require('express');
 
 //const serviceAccount = require("d:/Bitbucket/all.configuration/ptplacesprod-serviceaccount.json");
 
@@ -50,6 +51,9 @@ app.use(cors())
 // initializeApp({
 //   credential: cert(serviceAccount)
 // });
+ initializeApp({
+   credential: applicationDefault()
+ });
 
 const db = getFirestore();
 
