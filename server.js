@@ -93,13 +93,13 @@ app.get("/", (req, res) => {
   res.send("Wooho1")
 })
 
-// app.post("/NewPlace", (req, res) => {
-//   console.log(req.body);
-//   console.log(req.body.name)
-//   const docRef = db.collection('Places').add(req.body)
+app.post("/NewPlace", (req, res) => {
+  console.log(req.body);
+  console.log(req.body.name)
+  const docRef = db.collection('Places').add(req.body)
 
-//   res.send(`Hello1 `);
-// })
+  res.send(`Hello1 `);
+})
 
 // app.post("/UpdatePlace", (req, res) => {
 //   console.log(req.body);
