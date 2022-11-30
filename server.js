@@ -77,17 +77,17 @@ app.get("/PlaceList", async (req, res) => {
   res.json(result);
 })
 
-// app.get("/Place", async (req, res) => {
-//   let id = req.query.id;
-//   console.log(req.query);
-//   console.log(id);
-//   const placeRef = db.collection('Places').doc(id);
-//   const doc = await placeRef.get();
-//   console.log(doc);
-//   var element = { id: doc.id }
-//   element = { ...element, ...doc.data() }
-//   res.json(element);
-// })
+app.get("/Place", async (req, res) => {
+  let id = req.query.id;
+  console.log(req.query);
+  console.log(id);
+  const placeRef = db.collection('Places').doc(id);
+  const doc = await placeRef.get();
+  console.log(doc);
+  var element = { id: doc.id }
+  element = { ...element, ...doc.data() }
+  res.json(element);
+})
 
 app.get("/", (req, res) => {
   res.send("Wooho1")
