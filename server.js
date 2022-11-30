@@ -95,7 +95,7 @@ app.get("/", (req, res) => {
 
 app.post("/NewPlace", (req, res) => {
   console.log(req.body);
-  console.log(req.body.name)
+  console.log(req.body.Name)
   const docRef = db.collection('Places').add(req.body)
 
   res.send(`Hello1 `);
