@@ -6,7 +6,7 @@ var cors = require('cors')
 //const uploadImage = require('./helpers.js')
 
 const app = express()
-//// app.use(express.json())
+app.use(express.json())
 app.use(cors())
 
 const { initializeApp, applicationDefault, cert } = require('firebase-admin/app');
@@ -100,7 +100,9 @@ app.get("/", (req, res) => {
 })
 
 app.post("/NewPlace", (req, res) => {
+  console.log('NewPlace');
   console.log(req.body);
+  console.log(req);
 
   const docRef = db.collection('Places').add(req.body)
 
