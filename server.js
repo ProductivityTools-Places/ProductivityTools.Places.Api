@@ -13,13 +13,19 @@ const { initializeApp, applicationDefault, cert } = require('firebase-admin/app'
 const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
 //const { application } = require('express');
 
-//const serviceAccount = require("d:/Bitbucket/all.configuration/ptplacesprod-serviceaccount.json");
-// initializeApp({
-//   credential: cert(serviceAccount)
-// });
-initializeApp({
-  credential: applicationDefault()
-});
+if (process.env.NODE_ENV == 'development') {
+  console.log("Dev environment")
+  const serviceAccount = require("d:/Bitbucket/all.configuration/ptplacesdev-serviceaccount.json");
+  initializeApp({
+    credential: cert(serviceAccount)
+  });
+}
+else {
+  console.log("prod environment")
+  initializeApp({
+    credential: applicationDefault()
+  });
+}
 
 const db = getFirestore();
 
