@@ -1,19 +1,29 @@
 const Cloud = require('@google-cloud/storage')
 const path = require('path')
-//const serviceKey = path.join("d:\\Bitbucket\\all.configuration\\ptplacesprod-storage-serviceaccount.json")
-const serviceKey = path.join("d:\\Bitbucket\\all.configuration\\ptplacesdev-serviceaccount.json")
+const prodServiceKey = path.join("d:\\Bitbucket\\all.configuration\\ptplacesprod-storage-serviceaccount.json")
+const devServiceKey = path.join("d:\\Bitbucket\\all.configuration\\ptplacesdev-storage-serviceaccount.json")
 
-let bucketName = 'none'
+let projectName = 'none'
+let bucketName='none'
+let serviceKey=prodServiceKey;
 const { Storage } = Cloud
 if (process.env.NODE_ENV == 'development') {
-  bucketName = 'ptplacesprod'
+  projectName = 'ptplacesdev'
+  bucketName='placesdevvisits'
+  serviceKey=devServiceKey
 }
 else {
-  bucketName = placesdevvisits
+  projectName = 'ptplacesprod'
+  bucketName='placesprodvisits'
 }
+
+
+
 const storage = new Storage({
   keyFilename: serviceKey,
-  projectId: bucketName,
+  projectId: projectName,
 })
 
-module.exports = storage
+const bucket = storage.bucket(bucketName) // should be your bucket name
+
+module.exports = bucket

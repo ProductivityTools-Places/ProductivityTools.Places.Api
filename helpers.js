@@ -1,7 +1,8 @@
 const util = require('util')
 var fs = require('fs');
-const gc = require('./config/')
-const bucket = gc.bucket('placesprodvisits') // should be your bucket name
+const bucket = require('./config/')
+
+
 
 /**
  *
