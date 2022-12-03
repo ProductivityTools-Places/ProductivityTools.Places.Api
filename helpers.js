@@ -1,6 +1,6 @@
 const util = require('util')
 var fs = require('fs');
-const bucket = require('./config/')
+const bucket = require('./Config/')
 
 
 
