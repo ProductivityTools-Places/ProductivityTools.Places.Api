@@ -51,6 +51,7 @@ app.post('/uploads', async (req, res, next) => {
     console.log(req)
     console.log(req.file);
     const myFile = req.file
+    console.log("image1");
     const imageUrl = await uploadImage(myFile)
     console.log(imageUrl)
     res.status(200)
