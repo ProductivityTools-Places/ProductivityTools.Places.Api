@@ -48,7 +48,7 @@ app.disable('x-powered-by')
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: false}))
 
-app.post('/uploads', async (req, res, next) => {
+app.post('/uploads', multer.single('file'), (req, res, next) => {
   if (!req.file) {
     res.status(400).send('No file uploaded.');
     return;
