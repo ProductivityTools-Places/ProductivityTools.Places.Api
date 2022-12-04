@@ -14,28 +14,16 @@ const bucket = require('./Config/')
  */
 
 uploadImage = (file) => new Promise((resolve, reject) => {
-  console.log("XXXXXXXXXXXXX-uplad image starts")
-  console.log(file)
+ 
   const { originalname, buffer } = file
-  console.log("XXXXXXXXX-image2");
-  console.log(originalname);
-  const blob = bucket.file(originalname.replace(/ /g, "_"))
-  console.log("XXXXXXXXX-image3");
-  const blobStream = blob.createWriteStream({
-    resumable: false
-  })
+  const blob = bucket.file(originalname);
+  const blobStream = blob.createWriteStream()
 
   blobStream.on('finish', () => {
-    console.log("finish blob stream on")
-    console.log(bucket.name)
-    console.log(blob.name)
     const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`
-    console.log(publicUrl)
     resolve(publicUrl)
-    console.log(publicUrl)
   })
   .on('error', (err) => {
-    console.log(err)
     reject(`Unable to upload image, something went wrong`)
   })
   .end(buffer)
