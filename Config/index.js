@@ -5,8 +5,7 @@ const devServiceKey = path.join("d:\\Bitbucket\\all.configuration\\ptplacesdev-s
 
 let projectName = 'none'
 let bucketName='none'
-let serviceKey=none;
-const { Storage } = Cloud
+let serviceKey='none';
 if (process.env.NODE_ENV == 'development') {
   projectName = 'ptplacesdev'
   bucketName='placesdevvisits'
@@ -18,7 +17,7 @@ else {
 }
 
 
-
+const {Storage} = require('@google-cloud/storage');
 const storage = new Storage({
   keyFilename: serviceKey,
   projectId: projectName,

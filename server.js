@@ -5,9 +5,7 @@ var cors = require('cors')
 //image
 const {format} = require('util');
 const Multer = require('multer');
-const {Storage} = require('@google-cloud/storage');
-const storage = new Storage();
-
+const bucket = require('./Config/')
 
 const bodyParser = require('body-parser')
 const app = express()
@@ -41,7 +39,6 @@ const multer = Multer({
     fileSize: 5 * 1024 * 1024, // no larger than 5mb, you can change as needed.
   },
 });
-const bucket = storage.bucket("placesprodvisits");
 
 app.disable('x-powered-by')
 //app.use(multerMid.single('file'))
