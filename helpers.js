@@ -14,12 +14,13 @@ const bucket = require('./Config/')
  */
 
 uploadImage = (file) => new Promise((resolve, reject) => {
-  console.log("uplad image starts")
+  console.log("XXXXXXXXXXXXX-uplad image starts")
   console.log(file)
   const { originalname, buffer } = file
-
+  console.log("XXXXXXXXX-image2");
   console.log(originalname);
   const blob = bucket.file(originalname.replace(/ /g, "_"))
+  console.log("XXXXXXXXX-image3");
   const blobStream = blob.createWriteStream({
     resumable: false
   })
