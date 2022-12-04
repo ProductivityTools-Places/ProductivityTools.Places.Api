@@ -3,11 +3,13 @@ const express = require('express')
 var cors = require('cors')
 
 //image
+const {format} = require('util');
+const Multer = require('multer');
+const {Storage} = require('@google-cloud/storage');
+const storage = new Storage();
+
+
 const bodyParser = require('body-parser')
-const multer = require('multer')
-const uploadImage = require('./helpers.js')
-
-
 const app = express()
 app.use(express.json())
 app.use(cors())
@@ -33,35 +35,42 @@ else {
 const db = getFirestore();
 
 //image
-const multerMid = multer({
-  storage: multer.memoryStorage(),
+const multer = Multer({
+  storage: Multer.memoryStorage(),
   limits: {
-    fileSize: 5 * 1024 * 1024,
+    fileSize: 5 * 1024 * 1024, // no larger than 5mb, you can change as needed.
   },
-})
+});
+const bucket = storage.bucket("placesprodvisits");
 
 app.disable('x-powered-by')
-app.use(multerMid.single('file'))
+//app.use(multerMid.single('file'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: false}))
 
 app.post('/uploads', async (req, res, next) => {
-  try {
-    console.log("uploads starts")
-    console.log(req)
-    console.log(req.file);
-    const myFile = req.file
-    console.log("image1");
-    const imageUrl = await uploadImage(myFile)
-    console.log(imageUrl)
-    res.status(200)
-      .json({
-        message: "Upload was successful",
-        data: imageUrl
-      })
-  } catch (error) {
-    next(error)
+  if (!req.file) {
+    res.status(400).send('No file uploaded.');
+    return;
   }
+
+  // Create a new blob in the bucket and upload the file data.
+  const blob = bucket.file(req.file.originalname);
+  const blobStream = blob.createWriteStream();
+
+  blobStream.on('error', err => {
+    next(err);
+  });
+
+  blobStream.on('finish', () => {
+    // The public URL can be used to directly access the file via HTTP.
+    const publicUrl = format(
+      `https://storage.googleapis.com/${bucket.name}/${blob.name}`
+    );
+    res.status(200).send(publicUrl);
+  });
+
+  blobStream.end(req.file.buffer);
 })
 //endimage
 
