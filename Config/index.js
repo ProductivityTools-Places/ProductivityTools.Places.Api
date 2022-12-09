@@ -23,12 +23,8 @@ if (process.env.NODE_ENV == 'development') {
 else {
   projectName = 'ptplacesprod'
   bucketName='placesprodvisits'
-
   storage=new Storage();
 }
-
-
-
 
 
 const bucket = storage.bucket(bucketName) // should be your bucket name

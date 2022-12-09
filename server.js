@@ -14,7 +14,6 @@ app.use(cors())
 
 const { initializeApp, applicationDefault, cert } = require('firebase-admin/app');
 const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
-//const { application } = require('express');
 
 if (process.env.NODE_ENV == 'development') {
   console.log("Dev environment")
@@ -41,7 +40,6 @@ const multer = Multer({
 });
 
 app.disable('x-powered-by')
-//app.use(multerMid.single('file'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: false}))
 
@@ -110,14 +108,14 @@ app.get("/", (req, res) => {
   res.send("Wooho1")
 })
 
-app.post("/NewPlace", (req, res) => {
+app.post("/NewPlace", async (req, res) => {
   console.log('NewPlace');
   console.log(req.body);
   console.log(req);
 
-  const docRef = db.collection('Places').add(req.body)
-
-  res.send(`Hello1 `);
+  const docRef = await db.collection('Places').add(req.body)
+  let document=await docRef.get();
+  res.send(document.id);
 })
 
 app.post("/UpdatePlace", (req, res) => {
