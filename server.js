@@ -3,7 +3,7 @@ const express = require('express')
 var cors = require('cors')
 
 //image
-const {format} = require('util');
+const { format } = require('util');
 const Multer = require('multer');
 const bucket = require('./Config/')
 
@@ -13,18 +13,20 @@ app.use(express.json())
 app.use(cors())
 
 const { initializeApp, applicationDefault, cert } = require('firebase-admin/app');
+const { getAuth } = require("firebase-admin/auth");
 const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
 
+var firebaseApp=undefined;
 if (process.env.NODE_ENV == 'development') {
   console.log("Dev environment")
   const serviceAccount = require("d:/Bitbucket/all.configuration/ptplacesdev-serviceaccount.json");
-  initializeApp({
+  firebaseApp=initializeApp({
     credential: cert(serviceAccount)
   });
 }
 else {
   console.log("prod environment")
-  initializeApp({
+  firebaseApp=initializeApp({
     credential: applicationDefault()
   });
 }
@@ -41,7 +43,7 @@ const multer = Multer({
 
 app.disable('x-powered-by')
 app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({extended: false}))
+app.use(bodyParser.urlencoded({ extended: false }))
 
 app.post('/uploads', multer.single('file'), (req, res, next) => {
   if (!req.file) {
@@ -79,6 +81,26 @@ app.get("/Date", (req, res) => {
 })
 
 app.get("/PlaceList", async (req, res) => {
+  console.log(req.headers);
+  console.log(req.headers['authorization']);
+
+  if (req.headers['authorization'] != undefined) {
+    const idToken = req.headers['authorization'].split(" ")[1];
+    console.log(firebaseApp);
+    getAuth(firebaseApp)
+      .verifyIdToken(idToken)
+      .then((decodedToken) => {
+        const uid = decodedToken.uid;
+        console.log("token OK");
+        console.log(uid);
+      })
+      .catch((error) => {
+       console.log("wrong token")
+       console.log(error)
+       res.send(401);
+      });
+  }
+
   const placesCollection = db.collection('Places');
   const places = await placesCollection.get();
   console.log(places)
@@ -114,7 +136,7 @@ app.post("/NewPlace", async (req, res) => {
   console.log(req);
 
   const docRef = await db.collection('Places').add(req.body)
-  let document=await docRef.get();
+  let document = await docRef.get();
   res.send(document.id);
 })
 
