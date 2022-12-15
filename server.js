@@ -16,17 +16,17 @@ const { initializeApp, applicationDefault, cert } = require('firebase-admin/app'
 const { getAuth } = require("firebase-admin/auth");
 const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
 
-var firebaseApp=undefined;
+var firebaseApp = undefined;
 if (process.env.NODE_ENV == 'development') {
   console.log("Dev environment")
   const serviceAccount = require("d:/Bitbucket/all.configuration/ptplacesdev-serviceaccount.json");
-  firebaseApp=initializeApp({
+  firebaseApp = initializeApp({
     credential: cert(serviceAccount)
   });
 }
 else {
   console.log("prod environment")
-  firebaseApp=initializeApp({
+  firebaseApp = initializeApp({
     credential: applicationDefault()
   });
 }
@@ -80,26 +80,41 @@ app.get("/Date", (req, res) => {
   res.send(new Date().toString());
 })
 
-app.get("/PlaceList", async (req, res) => {
-  console.log(req.headers);
-  console.log(req.headers['authorization']);
+const validateToken = async (req) => {
+  let result = false;
 
   if (req.headers['authorization'] != undefined) {
     const idToken = req.headers['authorization'].split(" ")[1];
-    console.log(firebaseApp);
-    getAuth(firebaseApp)
+    //console.log(firebaseApp);
+    await getAuth(firebaseApp)
       .verifyIdToken(idToken)
       .then((decodedToken) => {
         const uid = decodedToken.uid;
         console.log("token OK");
         console.log(uid);
+        result = true;
       })
       .catch((error) => {
-       console.log("wrong token")
-       console.log(error)
-       res.send(401);
+        console.log("wrong token")
+        console.log(error)
+        result = false;
       });
   }
+  console.log("return result")
+  console.log(result);
+  return result;
+}
+
+app.get("/PlaceList", async (req, res) => {
+  console.log("Place List")
+  console.log(req.headers['authorization']);
+  let x = await validateToken(req);
+  console.log(x);
+  if (x == false) {
+    res.send(401);
+    return;
+  }
+  console.log("Token seems ok")
 
   const placesCollection = db.collection('Places');
   const places = await placesCollection.get();
