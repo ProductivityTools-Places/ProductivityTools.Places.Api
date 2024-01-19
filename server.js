@@ -20,15 +20,25 @@ var firebaseApp = undefined;
 if (process.env.NODE_ENV == 'development') {
   console.log("Dev environment")
   const serviceAccount = require("d:/GitHub/Home.Configuration/ptplacesdev-serviceaccount.json");
+  //const serviceAccount = require("d:/GitHub/Home.Configuration/ptplacesprod-serviceaccount.json");
   firebaseApp = initializeApp({
     credential: cert(serviceAccount)
   });
 }
 else {
-  console.log("prod environment")
-  firebaseApp = initializeApp({
-    credential: applicationDefault()
-  });
+
+  if (process.env.NODE_ENV == 'testingprod') {
+    console.log("testing prod environment")
+    const serviceAccount = require("d:/GitHub/Home.Configuration/ptplacesprod-serviceaccount.json");
+    firebaseApp = initializeApp({
+      credential: cert(serviceAccount)
+    });
+  } else {
+    console.log("prod environment")
+    firebaseApp = initializeApp({
+      credential: applicationDefault()
+    });
+  }
 }
 
 const db = getFirestore();

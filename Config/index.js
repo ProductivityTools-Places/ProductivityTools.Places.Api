@@ -1,7 +1,7 @@
 const Cloud = require('@google-cloud/storage')
 const path = require('path')
-const prodServiceKey = path.join("d:\\Bitbucket\\all.configuration\\ptplacesprod-storage-serviceaccount.json")
-const devServiceKey = path.join("d:\\Bitbucket\\all.configuration\\ptplacesdev-storage-serviceaccount.json")
+const prodServiceKey = path.join("d:\\GitHub\\Home.Configuration\\ptplacesprod-storage-serviceaccount.json")
+const devServiceKey = path.join("d:\\GitHub\\Home.Configuration\\ptplacesdev-storage-serviceaccount.json")
 
 let projectName = 'none'
 let bucketName='none'
@@ -11,6 +11,7 @@ const {Storage} = require('@google-cloud/storage');
 let storage=undefined;
 
 if (process.env.NODE_ENV == 'development') {
+  console.log("development in the project name")
   projectName = 'ptplacesdev'
   bucketName='placesdevvisits'
   serviceKey=devServiceKey
@@ -21,6 +22,7 @@ if (process.env.NODE_ENV == 'development') {
   })
 }
 else {
+  console.log("prod in the project name")
   projectName = 'ptplacesprod'
   bucketName='placesprodvisits'
   storage=new Storage();
