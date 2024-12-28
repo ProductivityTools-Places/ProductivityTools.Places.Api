@@ -19,7 +19,7 @@ const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestor
 var firebaseApp = undefined;
 if (process.env.NODE_ENV == 'development') {
   console.log("Dev environment")
-  const serviceAccount = require("d:/Bitbucket/all.configuration/ptplacesdev-serviceaccount.json");
+  const serviceAccount = require("d:/GitHub/Home.Configuration/ptplacesdev-serviceaccount.json");
   firebaseApp = initializeApp({
     credential: cert(serviceAccount)
   });
