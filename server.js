@@ -42,6 +42,8 @@ else {
 }
 
 let db;
+process.env.FIRESTORE_DATABASE = 'places';
+
 if (process.env.NODE_ENV == 'development') {
   db = new Firestore({
     databaseId: 'places',
