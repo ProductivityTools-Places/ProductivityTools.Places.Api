@@ -12,7 +12,7 @@ let storage=undefined;
 
 if (process.env.NODE_ENV == 'development') {
   console.log("development in the project name")
-  projectName = 'ptplacesdev'
+  projectName = 'ptprojectsweb'
   bucketName='placesdevvisits'
   serviceKey=devServiceKey
 
@@ -23,7 +23,7 @@ if (process.env.NODE_ENV == 'development') {
 }
 else {
   console.log("prod in the project name")
-  projectName = 'ptplacesprod'
+  projectName = 'ptprojectsweb'
   bucketName='placesprodvisits'
   storage=new Storage();
 }
