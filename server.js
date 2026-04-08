@@ -61,6 +61,7 @@ if (process.env.NODE_ENV == 'development') {
     projectId: 'ptprojectsweb'
   });
 }
+console.log("Firestore Init - Project:", db.projectId, "Database:", db.databaseId);
 
 //image
 const multer = Multer({
