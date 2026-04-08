@@ -1,4 +1,2 @@
 runtime: nodejs20
 service: places-api
-env_variables:
-  FIRESTORE_DATABASE: places
