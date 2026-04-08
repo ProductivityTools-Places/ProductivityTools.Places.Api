@@ -14,7 +14,7 @@ app.use(cors())
 
 const { initializeApp, applicationDefault, cert } = require('firebase-admin/app');
 const { getAuth } = require("firebase-admin/auth");
-const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
+const { Firestore, Timestamp, FieldValue } = require('@google-cloud/firestore');
 
 var firebaseApp = undefined;
 if (process.env.NODE_ENV == 'development') {
@@ -41,7 +41,22 @@ else {
   }
 }
 
-const db = getFirestore(firebaseApp, 'places');
+let db;
+if (process.env.NODE_ENV == 'development') {
+  db = new Firestore({
+    databaseId: 'places',
+    keyFilename: "d:/GitHub/Home.Configuration/ptplacesdev-serviceaccount.json"
+  });
+} else if (process.env.NODE_ENV == 'testingprod') {
+  db = new Firestore({
+    databaseId: 'places',
+    keyFilename: "d:/GitHub/Home.Configuration/ptplacesprod-serviceaccount.json"
+  });
+} else {
+  db = new Firestore({
+    databaseId: 'places'
+  });
+}
 
 //image
 const multer = Multer({
