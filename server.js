@@ -60,6 +60,8 @@ if (process.env.NODE_ENV == 'development') {
     databaseId: 'places',
     projectId: 'ptprojectsweb'
   });
+  try { db.databaseId = 'places'; } catch(e) {}
+  try { db._databaseId = 'places'; } catch(e) {}
 }
 console.log("Firestore Init - Project:", db.projectId, "Database:", db.databaseId);
 
@@ -146,6 +148,7 @@ app.get("/PlaceList", async (req, res) => {
   }
   console.log("Token seems ok")
 
+  console.log("Database ID before call:", db.databaseId);
   const placesCollection = db.collection('Places');
   const places = await placesCollection.get();
   console.log(places)
