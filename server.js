@@ -41,7 +41,7 @@ else {
   }
 }
 
-const db = getFirestore();
+const db = getFirestore(firebaseApp, 'places');
 
 //image
 const multer = Multer({
