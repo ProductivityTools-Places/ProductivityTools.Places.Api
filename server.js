@@ -54,7 +54,8 @@ if (process.env.NODE_ENV == 'development') {
   });
 } else {
   db = new Firestore({
-    databaseId: 'places'
+    databaseId: 'places',
+    projectId: 'ptprojectsweb'
   });
 }
 
