@@ -1,3 +1,4 @@
+process.env.FIRESTORE_DATABASE = 'places';
 //// const { application } = require('express')
 const express = require('express')
 var cors = require('cors')
@@ -42,7 +43,7 @@ else {
 }
 
 let db;
-process.env.FIRESTORE_DATABASE = 'places';
+
 
 if (process.env.NODE_ENV == 'development') {
   db = new Firestore({
