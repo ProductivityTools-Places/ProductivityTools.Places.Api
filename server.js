@@ -6,7 +6,7 @@ var cors = require('cors')
 //image
 const { format } = require('util');
 const Multer = require('multer');
-const bucket = require('./Config/')
+const { bucket, firebasePaths } = require('./Config/')
 
 const bodyParser = require('body-parser')
 const app = express()
@@ -18,10 +18,10 @@ const { getAuth } = require("firebase-admin/auth");
 const { Firestore, Timestamp, FieldValue } = require('@google-cloud/firestore');
 
 var firebaseApp = undefined;
+
 if (process.env.NODE_ENV == 'development') {
   console.log("Dev environment")
-  const serviceAccount = require("d:/GitHub/Home.Configuration/ptplacesdev-serviceaccount.json");
-  //const serviceAccount = require("d:/GitHub/Home.Configuration/ptplacesprod-serviceaccount.json");
+  const serviceAccount = require(firebasePaths.dev);
   firebaseApp = initializeApp({
     credential: cert(serviceAccount)
   });
@@ -30,15 +30,25 @@ else {
 
   if (process.env.NODE_ENV == 'testingprod') {
     console.log("testing prod environment")
-    const serviceAccount = require("d:/GitHub/Home.Configuration/ptplacesprod-serviceaccount.json");
+    const serviceAccount = require(firebasePaths.prod);
     firebaseApp = initializeApp({
       credential: cert(serviceAccount)
     });
   } else {
     console.log("prod environment")
-    firebaseApp = initializeApp({
-      credential: applicationDefault()
-    });
+    // If running locally on Linux and file exists, use it instead of applicationDefault
+    const isWin = process.platform === 'win32';
+    if (!isWin && !process.env.GAE_SERVICE) {
+      console.log("Running locally on Linux, using service account file");
+      const serviceAccount = require(firebasePaths.fallback);
+      firebaseApp = initializeApp({
+        credential: cert(serviceAccount)
+      });
+    } else {
+      firebaseApp = initializeApp({
+        credential: applicationDefault()
+      });
+    }
   }
 }
 
@@ -46,21 +56,25 @@ let db;
 
 
 if (process.env.NODE_ENV == 'development') {
+  console.log("development in the db")
   db = new Firestore({
     databaseId: 'places',
-    keyFilename: "d:/GitHub/Home.Configuration/ptplacesdev-serviceaccount.json"
-  });
-} else if (process.env.NODE_ENV == 'testingprod') {
-  db = new Firestore({
-    databaseId: 'places',
-    keyFilename: "d:/GitHub/Home.Configuration/ptplacesprod-serviceaccount.json"
+    keyFilename: firebasePaths.dev
   });
 } else {
-  db = new Firestore({
-    databaseId: 'places',
-    projectId: 'ptprojectsweb'
-  });
-
+  const isWin = process.platform === 'win32';
+  if (!isWin && !process.env.GAE_SERVICE) {
+    console.log("Using service account file for Firestore client");
+    db = new Firestore({
+      databaseId: 'places',
+      keyFilename: firebasePaths.fallback
+    });
+  } else {
+    db = new Firestore({
+      databaseId: 'places',
+      projectId: 'ptprojectsweb'
+    });
+  }
 }
 
 

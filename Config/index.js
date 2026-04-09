@@ -1,7 +1,18 @@
 const Cloud = require('@google-cloud/storage')
 const path = require('path')
-const prodServiceKey = path.join("d:\\GitHub\\Home.Configuration\\ptplacesprod-storage-serviceaccount.json")
-const devServiceKey = path.join("d:\\GitHub\\Home.Configuration\\ptplacesdev-storage-serviceaccount.json")
+const isWin = process.platform === 'win32';
+const linuxServiceAccountPath = "/usr/local/google/home/pwujczyk/github/Home.Configuration/ProductivityTools.ProjectsWeb.Firebase.ServiceAccount.json";
+
+const firebasePaths = {
+  dev: isWin ? "d:/GitHub/Home.Configuration/ProductivityTools.ProjectsWeb.Firebase.ServiceAccount.json" : linuxServiceAccountPath,
+  prod: isWin ? "d:/GitHub/Home.Configuration/ProductivityTools.ProjectsWeb.Firebase.ServiceAccount.json" : linuxServiceAccountPath,
+  fallback: linuxServiceAccountPath
+};
+
+const storagePaths = {
+  dev: isWin ? "d:\\GitHub\\Home.Configuration\\ptplacesdev-storage-serviceaccount.json" : linuxServiceAccountPath,
+  prod: isWin ? "d:\\GitHub\\Home.Configuration\\ptplacesprod-storage-serviceaccount.json" : linuxServiceAccountPath
+};
 
 let projectName = 'none'
 let bucketName='none'
@@ -14,7 +25,7 @@ if (process.env.NODE_ENV == 'development') {
   console.log("development in the project name")
   projectName = 'ptprojectsweb'
   bucketName='placesdevvisits'
-  serviceKey=devServiceKey
+  serviceKey = storagePaths.dev
 
   storage = new Storage({
     keyFilename: serviceKey,
@@ -31,4 +42,7 @@ else {
 
 const bucket = storage.bucket(bucketName) // should be your bucket name
 
-module.exports = bucket
+module.exports = {
+  bucket,
+  firebasePaths
+}
