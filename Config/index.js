@@ -35,8 +35,18 @@ if (process.env.NODE_ENV == 'development') {
 else {
   console.log("prod in the project name")
   projectName = 'ptprojectsweb'
-  bucketName='placesprodvisits'
-  storage=new Storage();
+  bucketName = 'ptprojects-placesprodvisits'
+
+  const isWin = process.platform === 'win32';
+  if (!isWin && !process.env.GAE_SERVICE) {
+    console.log("Running locally on Linux, using service account file for Storage");
+    storage = new Storage({
+      keyFilename: storagePaths.prod,
+      projectId: projectName
+    });
+  } else {
+    storage = new Storage();
+  }
 }
 
 
