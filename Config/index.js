@@ -1,17 +1,17 @@
 const Cloud = require('@google-cloud/storage')
 const path = require('path')
 const isWin = process.platform === 'win32';
-const linuxServiceAccountPath = "/usr/local/google/home/pwujczyk/github/Home.Configuration/ProductivityTools.ProjectsWeb.Firebase.ServiceAccount.json";
+const baseConfigPath = isWin ? "d:/GitHub/Home.Configuration" : "/usr/local/google/home/pwujczyk/github/Home.Configuration";
 
 const firebasePaths = {
-  dev: isWin ? "d:/GitHub/Home.Configuration/ProductivityTools.ProjectsWeb.Firebase.ServiceAccount.json" : linuxServiceAccountPath,
-  prod: isWin ? "d:/GitHub/Home.Configuration/ProductivityTools.ProjectsWeb.Firebase.ServiceAccount.json" : linuxServiceAccountPath,
-  fallback: linuxServiceAccountPath
+  dev: path.join(baseConfigPath, "PTProjectsDev.Firebase.ServiceAccount.json"),
+  prod: path.join(baseConfigPath, "PTProjectsWeb.Firebase.ServiceAccount.json"),
+  fallback: path.join(baseConfigPath, "PTProjectsWeb.Firebase.ServiceAccount.json")
 };
 
 const storagePaths = {
-  dev: isWin ? "d:\\GitHub\\Home.Configuration\\ptplacesdev-storage-serviceaccount.json" : linuxServiceAccountPath,
-  prod: isWin ? "d:\\GitHub\\Home.Configuration\\ptplacesprod-storage-serviceaccount.json" : linuxServiceAccountPath
+  dev: path.join(baseConfigPath, "ptplacesdev-storage-serviceaccount.json"),
+  prod: path.join(baseConfigPath, "ptplacesprod-storage-serviceaccount.json")
 };
 
 let projectName = 'none'
@@ -20,12 +20,12 @@ let serviceKey='none';
 
 const {Storage} = require('@google-cloud/storage');
 let storage=undefined;
-
+console.log("NODE_ENV: ", process.env.NODE_ENV);
 if (process.env.NODE_ENV == 'development') {
   console.log("development in the project name")
-  projectName = 'ptprojectsweb'
-  bucketName='placesdevvisits'
-  serviceKey = storagePaths.dev
+  projectName = 'ptprojectsdev'
+  bucketName = 'ptprojects-placesdevvisits'
+  serviceKey = firebasePaths.dev
 
   storage = new Storage({
     keyFilename: serviceKey,
@@ -41,7 +41,7 @@ else {
   if (!isWin && !process.env.GAE_SERVICE) {
     console.log("Running locally on Linux, using service account file for Storage");
     storage = new Storage({
-      keyFilename: storagePaths.prod,
+      keyFilename: firebasePaths.prod,
       projectId: projectName
     });
   } else {

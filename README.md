@@ -45,3 +45,8 @@ gcloud firestore import gs://places-migraton/2026-04-11T20:42:22_95631 --datase=
 
 
 places-migraton2/2026-04-12T22:01:42_72281
+
+
+
+## Debug development
+NODE_ENV=development npm run start
