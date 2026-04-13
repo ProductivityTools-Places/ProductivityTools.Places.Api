@@ -6,7 +6,7 @@ var cors = require('cors')
 //image
 const { format } = require('util');
 const Multer = require('multer');
-const { bucket, firebasePaths } = require('./Config/')
+const { bucket, firebasePaths, imagePrefix } = require('./Config/')
 
 const bodyParser = require('body-parser')
 const app = express()
@@ -106,9 +106,7 @@ app.post('/uploads', multer.single('file'), (req, res, next) => {
 
   blobStream.on('finish', () => {
     // The public URL can be used to directly access the file via HTTP.
-    const publicUrl = format(
-      `https://storage.googleapis.com/${bucket.name}/${blob.name}`
-    );
+    const publicUrl = `${imagePrefix}${blob.name}`;
     res.status(200).send(publicUrl);
   });
 
@@ -170,6 +168,29 @@ app.get("/PlaceList", async (req, res) => {
     var element = { id: doc.id }
     console.log(doc.id, '=>', doc.data())
     element = { ...element, ...doc.data() }
+
+    if (element.Thumbnail && !element.Thumbnail.startsWith('http')) {
+      element.Thumbnail = `${imagePrefix}${element.Thumbnail}`;
+      console.log("Thumbnail", element.Thumbnail);
+      console.log("pawel");
+      console.log("element", element);
+    }
+    if (element.Visits && Array.isArray(element.Visits)) {
+      element.Visits.forEach(visit => {
+        if (visit.visitThumbnail && !visit.visitThumbnail.startsWith('http')) {
+          visit.visitThumbnail = `${imagePrefix}${visit.visitThumbnail}`;
+        }
+        if (visit.Photos && Array.isArray(visit.Photos)) {
+          visit.Photos = visit.Photos.map(photo => {
+            if (typeof photo === 'string' && !photo.startsWith('http')) {
+              return `${imagePrefix}${photo}`;
+            }
+            return photo;
+          });
+        }
+      });
+    }
+
     result.push(element);
   })
   res.json(result);
@@ -207,6 +228,54 @@ app.post("/UpdatePlace", (req, res) => {
   const docRef = db.collection('Places').doc(req.body.id).set(req.body)
   res.send(`Updated`);
 })
+
+app.post("/migrate-images", async (req, res) => {
+  console.log("Migrating images...");
+  const placesCollection = db.collection('Places');
+  const places = await placesCollection.get();
+
+  let count = 0;
+  const oldPrefix = 'https://storage.googleapis.com/placesprodvisits/';
+
+  const promises = [];
+
+  places.forEach(doc => {
+    const data = doc.data();
+    let updated = false;
+
+    if (data.Thumbnail && data.Thumbnail.startsWith(oldPrefix)) {
+      data.Thumbnail = data.Thumbnail.replace(oldPrefix, '');
+      updated = true;
+    }
+
+    if (data.Visits && Array.isArray(data.Visits)) {
+      data.Visits.forEach(visit => {
+        if (visit.Photos && Array.isArray(visit.Photos)) {
+          visit.Photos = visit.Photos.map(photo => {
+            if (typeof photo === 'string' && photo.startsWith(oldPrefix)) {
+              updated = true;
+              return photo.replace(oldPrefix, '');
+            }
+            return photo;
+          });
+        }
+        if (visit.visitThumbnail && visit.visitThumbnail.startsWith(oldPrefix)) {
+          visit.visitThumbnail = visit.visitThumbnail.replace(oldPrefix, '');
+          updated = true;
+        }
+      });
+    }
+
+    if (updated) {
+      count++;
+      promises.push(placesCollection.doc(doc.id).update(data));
+    }
+  });
+
+  await Promise.all(promises);
+
+  res.send(`Migrated ${count} documents.`);
+});
 
 
 // app.post("/Visit", (req,res)=>{

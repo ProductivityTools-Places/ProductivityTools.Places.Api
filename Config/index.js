@@ -51,8 +51,10 @@ else {
 
 
 const bucket = storage.bucket(bucketName) // should be your bucket name
+const imagePrefix = `https://storage.googleapis.com/${bucketName}/`;
 
 module.exports = {
   bucket,
-  firebasePaths
+  firebasePaths,
+  imagePrefix
 }
