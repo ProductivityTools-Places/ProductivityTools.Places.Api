@@ -208,6 +208,10 @@ app.get("/Place", async (req, res) => {
   res.json(element);
 })
 
+app.get("/get-photos-base-url", (req, res) => {
+  res.send(imagePrefix);
+});
+
 app.get("/", (req, res) => {
   res.send("Wooho1")
 })
@@ -230,6 +234,8 @@ app.post("/UpdatePlace", (req, res) => {
 })
 
 app.post("/migrate-images", async (req, res) => {
+  res.send("Not doing it anymore");
+  return;
   console.log("Migrating images...");
   const placesCollection = db.collection('Places');
   const places = await placesCollection.get();
