@@ -170,27 +170,6 @@ const validateToken = async (req) => {
   return result;
 }
 
-const enrichPlaceWithImageUrls = (element) => {
-  if (element.Thumbnail && !element.Thumbnail.startsWith('http')) {
-    element.Thumbnail = `${imagePrefix}${element.Thumbnail}`;
-  }
-  if (element.Visits && Array.isArray(element.Visits)) {
-    element.Visits.forEach(visit => {
-      if (visit.visitThumbnail && !visit.visitThumbnail.startsWith('http')) {
-        visit.visitThumbnail = `${imagePrefix}${visit.visitThumbnail}`;
-      }
-      if (visit.Photos && Array.isArray(visit.Photos)) {
-        visit.Photos = visit.Photos.map(photo => {
-          if (typeof photo === 'string' && !photo.startsWith('http')) {
-            return `${imagePrefix}${photo}`;
-          }
-          return photo;
-        });
-      }
-    });
-  }
-  return element;
-}
 
 app.get("/PlaceList", async (req, res) => {
   console.log("Place List")
@@ -213,7 +192,6 @@ app.get("/PlaceList", async (req, res) => {
     console.log(doc.id, '=>', doc.data())
     element = { ...element, ...doc.data() }
 
-    element = enrichPlaceWithImageUrls(element);
 
     result.push(element);
   })
@@ -229,7 +207,6 @@ app.get("/Place", async (req, res) => {
   console.log(doc);
   var element = { id: doc.id }
   element = { ...element, ...doc.data() }
-  element = enrichPlaceWithImageUrls(element);
   res.json(element);
 })
 
