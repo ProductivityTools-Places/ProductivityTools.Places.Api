@@ -112,6 +112,28 @@ app.post('/uploads', multer.single('file'), (req, res, next) => {
 
   blobStream.end(req.file.buffer);
 })
+
+app.delete('/photos/:filename', async (req, res) => {
+  console.log("Delete photo request for file:", req.params.filename);
+  let x = await validateToken(req);
+  if (x === false) {
+    res.status(401).send('Unauthorized');
+    return;
+  }
+
+  const filename = req.params.filename;
+  try {
+    await bucket.file(filename).delete();
+    res.status(200).send(`File ${filename} deleted.`);
+  } catch (error) {
+    console.error("Error deleting file:", error);
+    if (error.code === 404) {
+      res.status(404).send(`File ${filename} not found.`);
+    } else {
+      res.status(500).send(`Error deleting file: ${error.message}`);
+    }
+  }
+})
 //endimage
 
 
@@ -148,6 +170,28 @@ const validateToken = async (req) => {
   return result;
 }
 
+const enrichPlaceWithImageUrls = (element) => {
+  if (element.Thumbnail && !element.Thumbnail.startsWith('http')) {
+    element.Thumbnail = `${imagePrefix}${element.Thumbnail}`;
+  }
+  if (element.Visits && Array.isArray(element.Visits)) {
+    element.Visits.forEach(visit => {
+      if (visit.visitThumbnail && !visit.visitThumbnail.startsWith('http')) {
+        visit.visitThumbnail = `${imagePrefix}${visit.visitThumbnail}`;
+      }
+      if (visit.Photos && Array.isArray(visit.Photos)) {
+        visit.Photos = visit.Photos.map(photo => {
+          if (typeof photo === 'string' && !photo.startsWith('http')) {
+            return `${imagePrefix}${photo}`;
+          }
+          return photo;
+        });
+      }
+    });
+  }
+  return element;
+}
+
 app.get("/PlaceList", async (req, res) => {
   console.log("Place List")
   console.log(req.headers['authorization']);
@@ -169,27 +213,7 @@ app.get("/PlaceList", async (req, res) => {
     console.log(doc.id, '=>', doc.data())
     element = { ...element, ...doc.data() }
 
-    if (element.Thumbnail && !element.Thumbnail.startsWith('http')) {
-      element.Thumbnail = `${imagePrefix}${element.Thumbnail}`;
-      console.log("Thumbnail", element.Thumbnail);
-      console.log("pawel");
-      console.log("element", element);
-    }
-    if (element.Visits && Array.isArray(element.Visits)) {
-      element.Visits.forEach(visit => {
-        if (visit.visitThumbnail && !visit.visitThumbnail.startsWith('http')) {
-          visit.visitThumbnail = `${imagePrefix}${visit.visitThumbnail}`;
-        }
-        if (visit.Photos && Array.isArray(visit.Photos)) {
-          visit.Photos = visit.Photos.map(photo => {
-            if (typeof photo === 'string' && !photo.startsWith('http')) {
-              return `${imagePrefix}${photo}`;
-            }
-            return photo;
-          });
-        }
-      });
-    }
+    element = enrichPlaceWithImageUrls(element);
 
     result.push(element);
   })
@@ -205,6 +229,7 @@ app.get("/Place", async (req, res) => {
   console.log(doc);
   var element = { id: doc.id }
   element = { ...element, ...doc.data() }
+  element = enrichPlaceWithImageUrls(element);
   res.json(element);
 })
 

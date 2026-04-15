@@ -13,3 +13,8 @@ GET http://localhost:8080/Places HTTP/1.1
 ###
 
 Invoke-WebRequest -Uri http://127.0.0.1:8080/New -Method Post -Body (@{name='pawel'; description='dest'; num_of_servings=0} |ConvertTo-Json) -ContentType application/json
+
+###
+
+DELETE http://localhost:8080/photos/sample.jpg HTTP/1.1
+Authorization: Bearer <token>
