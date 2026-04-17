@@ -235,6 +235,14 @@ app.post("/UpdatePlace", (req, res) => {
   res.send(`Updated`);
 })
 
+app.post("/DeletePlace", async (req, res) => {
+  console.log('DeletePlace');
+  console.log(req.body);
+  console.log(req.body.id);
+  await db.collection('Places').doc(req.body.id).delete();
+  res.send(`Deleted`);
+})
+
 app.post("/migrate-images", async (req, res) => {
   res.send("Not doing it anymore");
   return;
