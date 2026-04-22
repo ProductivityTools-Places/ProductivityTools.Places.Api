@@ -210,6 +210,17 @@ app.get("/Place", async (req, res) => {
   res.json(element);
 })
 
+app.get("/PlaceTypes", async (req, res) => {
+  console.log("Place Types")
+  const docRef = db.collection('Dictionaries').doc('PlaceTypes');
+  const doc = await docRef.get();
+  if (!doc.exists) {
+    res.json([]);
+  } else {
+    res.json(doc.data().values || []);
+  }
+})
+
 app.get("/get-photos-base-url", (req, res) => {
   res.send(imagePrefix);
 });
@@ -241,6 +252,15 @@ app.post("/DeletePlace", async (req, res) => {
   console.log(req.body.id);
   await db.collection('Places').doc(req.body.id).delete();
   res.send(`Deleted`);
+})
+
+app.post("/SeedPlaceTypes", async (req, res) => {
+  console.log('SeedPlaceTypes');
+  const types = ['Restaurant', 'Sport', 'Attraction'];
+  const docRef = db.collection('Dictionaries').doc('PlaceTypes');
+  
+  await docRef.set({ values: types });
+  res.send('Seeded');
 })
 
 app.post("/migrate-images", async (req, res) => {

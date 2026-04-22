@@ -8,11 +8,15 @@ content-type: application/json
 
 ###
 
-GET http://localhost:8080/Places HTTP/1.1
+GET http://localhost:8080/PlaceList HTTP/1.1
 
 ###
 
-Invoke-WebRequest -Uri http://127.0.0.1:8080/New -Method Post -Body (@{name='pawel'; description='dest'; num_of_servings=0} |ConvertTo-Json) -ContentType application/json
+GET http://localhost:8080/PlaceTypes HTTP/1.1
+
+###
+
+POST http://localhost:8080/SeedPlaceTypes HTTP/1.1
 
 ###
 
