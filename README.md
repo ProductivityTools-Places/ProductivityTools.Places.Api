@@ -1,8 +1,28 @@
 
-## Debug development
-NODE_ENV=development npm run start
+## Debug development windows
 $env:NODE_ENV="development"; npm run start
 
+## Debug development ubuntu
+NODE_ENV=development npm run start
+
+## Cloud Run Deployment
+
+### 1. Create Artifact Registry repository (one-time setup)
+```bash
+gcloud config set project ptprojectsweb
+gcloud artifacts repositories create places-repo --repository-format=docker --location=europe-west1 --description="Docker repository for Places API"
+```
+
+### 2. Deploy via Cloud Build (`cloudbuild.yaml`)
+```bash
+gcloud builds submit .
+```
+
+*(Alternatively, build and deploy manually)*:
+```bash
+gcloud builds submit --tag europe-west1-docker.pkg.dev/ptprojectsweb/places-repo/api .
+gcloud run deploy places-api --image europe-west1-docker.pkg.dev/ptprojectsweb/places-repo/api --platform managed --region europe-west1 --allow-unauthenticated
+```
 
 ## Firestore Migration
 

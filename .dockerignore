@@ -1,0 +1,10 @@
+node_modules
+npm-debug.log
+.git
+.gitignore
+.gcloudignore
+.vscode
+README.md
+Requests.http
+app.yaml
+cloudbuild.yaml

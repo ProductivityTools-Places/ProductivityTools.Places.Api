@@ -38,7 +38,7 @@ else {
   bucketName = 'ptprojects-placesprodvisits'
 
   const isWin = process.platform === 'win32';
-  if (!isWin && !process.env.GAE_SERVICE) {
+  if (!isWin && !process.env.GAE_SERVICE && !process.env.K_SERVICE) {
     console.log("Running locally on Linux, using service account file for Storage");
     storage = new Storage({
       keyFilename: firebasePaths.prod,

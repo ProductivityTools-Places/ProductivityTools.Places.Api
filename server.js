@@ -38,7 +38,7 @@ else {
     console.log("prod environment")
     // If running locally on Linux and file exists, use it instead of applicationDefault
     const isWin = process.platform === 'win32';
-    if (!isWin && !process.env.GAE_SERVICE) {
+    if (!isWin && !process.env.GAE_SERVICE && !process.env.K_SERVICE) {
       console.log("Running locally on Linux, using service account file");
       const serviceAccount = require(firebasePaths.fallback);
       firebaseApp = initializeApp({
@@ -63,7 +63,7 @@ if (process.env.NODE_ENV == 'development') {
   });
 } else {
   const isWin = process.platform === 'win32';
-  if (!isWin && !process.env.GAE_SERVICE) {
+  if (!isWin && !process.env.GAE_SERVICE && !process.env.K_SERVICE) {
     console.log("Using service account file for Firestore client");
     db = new Firestore({
       databaseId: 'places',
